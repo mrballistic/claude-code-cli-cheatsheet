@@ -1,0 +1,198 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-tertiary: #1a1a28;
+  --text-primary: #e8e8ed;
+  --text-secondary: #8888a0;
+  --text-tertiary: #55556a;
+  --accent-primary: #22d3ee;
+  --accent-secondary: #a78bfa;
+  --accent-tertiary: #34d399;
+  --accent-warn: #fbbf24;
+  --border-primary: #222235;
+  --border-glow: rgba(34, 211, 238, 0.15);
+}
+
+@theme inline {
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-tertiary: var(--bg-tertiary);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-tertiary: var(--accent-tertiary);
+  --color-accent-warn: var(--accent-warn);
+  --color-border-primary: var(--border-primary);
+  --color-border-glow: var(--border-glow);
+  --font-display: var(--font-jetbrains-mono);
+  --font-body: var(--font-outfit);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body), system-ui, sans-serif;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--text-tertiary) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Section divider */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--accent-primary),
+    var(--accent-secondary),
+    transparent
+  );
+  border: none;
+  margin: 0;
+}
+
+/* Code block styles */
+.code-block {
+  position: relative;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+/* Terminal chrome wrapper */
+.terminal-chrome {
+  position: relative;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.terminal-chrome::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary), transparent);
+  z-index: 1;
+}
+
+.terminal-chrome .code-block {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: none;
+}
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-bottom: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.terminal-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.terminal-dot:nth-child(1) { background-color: #ff5f57; }
+.terminal-dot:nth-child(2) { background-color: #febc2e; }
+.terminal-dot:nth-child(3) { background-color: #28c840; }
+
+.code-block::-webkit-scrollbar {
+  height: 6px;
+}
+
+.code-block::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+.code-block::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: 3px;
+}
+
+/* Card styles */
+.card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 20px var(--border-glow);
+}
+
+/* NEW badge */
+.badge-new {
+  display: inline-block;
+  background-color: var(--accent-tertiary);
+  color: var(--bg-primary);
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
+
+/* Scroll reveal animation */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Terminal cursor blink */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* Table row hover */
+.command-table-row:hover {
+  background-color: var(--bg-tertiary);
+}
