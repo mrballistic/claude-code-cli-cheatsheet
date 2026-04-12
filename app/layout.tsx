@@ -1,3 +1,7 @@
+/**
+ * Root layout. Loads JetBrains Mono (display/code) and Outfit (body)
+ * via next/font/google, sets page metadata, and applies font CSS variables.
+ */
 import type { Metadata } from 'next';
 import { JetBrains_Mono, Outfit } from 'next/font/google';
 import './globals.css';

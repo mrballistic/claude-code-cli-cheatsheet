@@ -1,3 +1,7 @@
+/**
+ * Consistent section header with an anchor `id` for scroll-spy targeting.
+ * Renders an Outfit-font h2 with an optional muted subtitle.
+ */
 interface SectionHeadingProps {
   id: string;
   title: string;

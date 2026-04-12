@@ -5,6 +5,7 @@ import ModeCycler from './ModeCycler';
 import ScrollReveal from './ScrollReveal';
 import { Shield } from 'lucide-react';
 
+/** Layer 2 section: permission mode cards, interactive Shift+Tab cycler, and Auto Mode deep-dive. */
 export default function PermissionModes() {
   return (
     <section className="px-6 py-16 max-w-4xl mx-auto">

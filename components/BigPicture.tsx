@@ -2,6 +2,7 @@ import SectionHeading from './SectionHeading';
 import BigPictureGrid from './BigPictureGrid';
 import ScrollReveal from './ScrollReveal';
 
+/** Big Picture section: renders the system diagram as an icon-mapped card grid. */
 export default function BigPicture() {
   return (
     <section className="px-6 py-16 max-w-4xl mx-auto">

@@ -3,6 +3,11 @@
 import { useState, useCallback } from 'react';
 import { Clipboard, Check } from 'lucide-react';
 
+/**
+ * Reusable copy-to-clipboard button. Shows a clipboard icon that swaps
+ * to a green checkmark for 2 seconds after a successful copy.
+ * Used across CodeBlock, ResourceCard, and inline link copy controls.
+ */
 interface CopyButtonProps {
   text: string;
   size?: number;
@@ -15,9 +20,13 @@ export default function CopyButton({ text, size = 14, className = '' }: CopyButt
   const handleCopy = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard access denied — fail silently
+    }
   }, [text]);
 
   return (

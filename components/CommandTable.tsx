@@ -1,3 +1,7 @@
+/**
+ * Styled data table for commands/shortcuts. Renders a two-column
+ * layout (command + description) with hover highlighting and optional "NEW" badges.
+ */
 interface CommandTableProps {
   commands: { command: string; description: string; isNew?: boolean }[];
 }

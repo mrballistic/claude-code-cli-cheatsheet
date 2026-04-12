@@ -1,5 +1,9 @@
 import type { PermissionMode } from '@/lib/constants';
 
+/**
+ * Card displaying a single Claude Code permission mode with its CLI flag,
+ * behavior description, and recommended use case.
+ */
 interface ModeCardProps {
   mode: PermissionMode;
 }

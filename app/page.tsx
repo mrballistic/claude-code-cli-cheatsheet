@@ -1,3 +1,7 @@
+/**
+ * Main page. Composes all 12 sections in order with gradient dividers
+ * between each. Navbar is fixed; Footer sits outside `<main>`.
+ */
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import GettingStarted from '@/components/GettingStarted';

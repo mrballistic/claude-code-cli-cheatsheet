@@ -2,6 +2,10 @@ import { ExternalLink } from 'lucide-react';
 import CopyButton from './CopyButton';
 import type { Resource } from '@/lib/constants';
 
+/**
+ * External link card with title, description, URL, and a copy button
+ * that appears on hover. Opens links in a new tab with proper rel attributes.
+ */
 interface ResourceCardProps {
   resource: Resource;
 }

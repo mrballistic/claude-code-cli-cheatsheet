@@ -4,6 +4,7 @@ import CodeBlock from './CodeBlock';
 import ScrollReveal from './ScrollReveal';
 import { FileText } from 'lucide-react';
 
+/** Layer 3 section: CLAUDE.md file locations, template example, and best-practice tips. */
 export default function ClaudeMd() {
   return (
     <section className="px-6 py-16 max-w-4xl mx-auto">

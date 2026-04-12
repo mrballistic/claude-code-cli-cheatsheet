@@ -1,6 +1,7 @@
 import { FOOTER } from '@/lib/constants';
 import { Terminal, Triangle } from 'lucide-react';
 
+/** Site footer with "Built with Claude Code CLI" and "Deployed on Vercel" badges and talk date. */
 export default function Footer() {
   return (
     <footer

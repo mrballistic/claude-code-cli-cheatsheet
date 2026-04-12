@@ -2,6 +2,11 @@
 
 import CopyButton from './CopyButton';
 
+/**
+ * Terminal-styled code block with macOS-style chrome (three colored dots),
+ * a gradient top-edge accent, optional language label, and a copy button.
+ * All code blocks on the site render through this component.
+ */
 interface CodeBlockProps {
   code: string;
   language?: string;

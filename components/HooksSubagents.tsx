@@ -4,6 +4,7 @@ import CodeBlock from './CodeBlock';
 import CommandTable from './CommandTable';
 import ScrollReveal from './ScrollReveal';
 
+/** Combined section for Hooks (lifecycle events + examples) and Subagents (built-in types). */
 export default function HooksSubagents() {
   return (
     <section className="px-6 py-16 max-w-4xl mx-auto">

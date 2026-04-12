@@ -1,3 +1,8 @@
+/**
+ * Visual card grid rendering the "Big Picture" system diagram.
+ * Maps each Claude Code layer to a lucide icon and its one-line description.
+ * Responsive: 1-col mobile, 2-col tablet, 3-col desktop.
+ */
 import { BIG_PICTURE } from '@/lib/constants';
 import {
   FileText,

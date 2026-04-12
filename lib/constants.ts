@@ -1,26 +1,38 @@
+/**
+ * @module constants
+ * Central content data layer for the Claude Code CLI companion site.
+ * All text, commands, URLs, and descriptions are defined here as typed
+ * objects — components import from this file and never hardcode strings.
+ */
+
 // ─── Type Definitions ───────────────────────────────────────────────────────
 
+/** A navigation link rendered in the sticky top navbar. */
 export interface NavItem {
   label: string;
   href: string;
 }
 
+/** A generic CLI command with its description. */
 export interface Command {
   command: string;
   description: string;
 }
 
+/** A Claude Code slash command, optionally flagged as new. */
 export interface SlashCommand {
   command: string;
   description: string;
   isNew?: boolean;
 }
 
+/** A keyboard shortcut with its key combo and description. */
 export interface KeyboardShortcut {
   keys: string;
   description: string;
 }
 
+/** A Claude Code permission mode with its CLI flag and use case. */
 export interface PermissionMode {
   mode: string;
   flag: string;
@@ -28,59 +40,70 @@ export interface PermissionMode {
   useWhen: string;
 }
 
+/** A titled detail block within the Auto Mode deep-dive card. */
 export interface AutoModeDetail {
   title: string;
   description: string;
 }
 
+/** A tip card for the CLAUDE.md section. */
 export interface ClaudeMdTip {
   title: string;
   description: string;
 }
 
+/** A key concept card in the Skills section. */
 export interface SkillConcept {
   title: string;
   description: string;
 }
 
+/** A single step in the Superpowers workflow pipeline. */
 export interface WorkflowStep {
   name: string;
   description: string;
 }
 
+/** A common MCP server with its install command. */
 export interface MCPServer {
   name: string;
   description: string;
   installCommand: string;
 }
 
+/** An MCP server configuration scope (local, project, or user). */
 export interface MCPScope {
   scope: string;
   location: string;
   description: string;
 }
 
+/** A Claude Code lifecycle event that hooks can subscribe to. */
 export interface HookEvent {
   event: string;
   description: string;
 }
 
+/** A hook configuration example with JSON code snippet. */
 export interface HookExample {
   title: string;
   description: string;
   code: string;
 }
 
+/** A built-in subagent type with its specialization. */
 export interface SubagentType {
   name: string;
   description: string;
 }
 
+/** A layer in the "Big Picture" system diagram. */
 export interface BigPictureItem {
   layer: string;
   description: string;
 }
 
+/** An external resource link card. */
 export interface Resource {
   title: string;
   url: string;
@@ -89,6 +112,7 @@ export interface Resource {
 
 // ─── Navigation ─────────────────────────────────────────────────────────────
 
+/** Sticky navbar section links. Order determines render and scroll-spy order. */
 export const NAV_ITEMS: NavItem[] = [
   { label: "Start", href: "#getting-started" },
   { label: "CLI", href: "#cli-essentials" },
@@ -104,6 +128,7 @@ export const NAV_ITEMS: NavItem[] = [
 
 // ─── Hero ───────────────────────────────────────────────────────────────────
 
+/** Hero section content: title, subtitle, core insight quote, and quick-jump buttons. */
 export const HERO = {
   title: "Claude Code CLI",
   subtitle:
@@ -120,6 +145,7 @@ export const HERO = {
 
 // ─── Getting Started ────────────────────────────────────────────────────────
 
+/** Install command, launch commands, and version check for the Getting Started section. */
 export const GETTING_STARTED = {
   installCommand: "npm install -g @anthropic-ai/claude-code",
   requirement: "Requires Node.js 20+",
@@ -135,6 +161,7 @@ export const GETTING_STARTED = {
 
 // ─── Layer 1: CLI Essentials ────────────────────────────────────────────────
 
+/** All Claude Code slash commands. Items with `isNew` get a "NEW" badge. */
 export const SLASH_COMMANDS: SlashCommand[] = [
   { command: "/help", description: "Show all available commands" },
   { command: "/cost", description: "Display token usage and cost for the current session" },
@@ -150,12 +177,14 @@ export const SLASH_COMMANDS: SlashCommand[] = [
   { command: "/usage", description: "Show API usage statistics" },
 ];
 
+/** Keyboard shortcuts for the CLI Essentials section. */
 export const KEYBOARD_SHORTCUTS: KeyboardShortcut[] = [
   { keys: "Shift+Tab", description: "Cycle permission modes: normal → auto-accept → auto → plan" },
   { keys: "Esc", description: "Cancel current generation / clear input" },
   { keys: "Up Arrow", description: "Cycle through input history" },
 ];
 
+/** Highlighted callout box for the `/powerup` command. */
 export const POWERUP_CALLOUT = {
   text: "If you remember one command, remember this one.",
   command: "/powerup",
@@ -165,6 +194,7 @@ export const POWERUP_CALLOUT = {
 
 // ─── Layer 2: Permission Modes ──────────────────────────────────────────────
 
+/** All five Claude Code permission modes with flags and use cases. */
 export const PERMISSION_MODES: PermissionMode[] = [
   {
     mode: "Default",
@@ -198,8 +228,10 @@ export const PERMISSION_MODES: PermissionMode[] = [
   },
 ];
 
+/** The four modes cycled through by Shift+Tab in the interactive demo widget. */
 export const MODE_CYCLE_ORDER = ["Default", "Auto-accept Edits", "Auto", "Plan"];
 
+/** Auto Mode deep-dive card: how it works, launch commands, and availability. */
 export const AUTO_MODE = {
   title: "Auto Mode Deep Dive",
   subtitle: "\"Seatbelts, not a force field.\"",
@@ -223,6 +255,7 @@ export const AUTO_MODE = {
 
 // ─── Layer 3: CLAUDE.md ─────────────────────────────────────────────────────
 
+/** CLAUDE.md section: description, file locations, template, and tips. */
 export const CLAUDE_MD = {
   title: "CLAUDE.md — Your Project's Instruction Manual",
   description:
@@ -277,6 +310,7 @@ Key patterns, file structure conventions, data flow.
 
 // ─── Layer 4: Skills ────────────────────────────────────────────────────────
 
+/** Skills section: locations, file format example, key concepts, and resource links. */
 export const SKILLS = {
   title: "Skills — Domain Expertise on Demand",
   description:
@@ -321,6 +355,7 @@ is auto-invoked.`,
 
 // ─── Layer 5: Superpowers Plugin ────────────────────────────────────────────
 
+/** Superpowers plugin: install commands, 8-step workflow, key skills, and power combo callout. */
 export const SUPERPOWERS = {
   title: "Superpowers Plugin",
   subtitle: "By Jesse Vincent / Prime Radiant — a complete development methodology as a plugin.",
@@ -354,6 +389,7 @@ export const SUPERPOWERS = {
 
 // ─── Layer 6: MCP Servers ───────────────────────────────────────────────────
 
+/** MCP Servers section: add-server examples, scopes, common servers, managing commands, and FastMCP example. */
 export const MCP = {
   title: "MCP Servers — External Systems on Tap",
   description:
@@ -435,6 +471,7 @@ mcp.run()`,
 
 // ─── Hooks & Subagents ──────────────────────────────────────────────────────
 
+/** Hooks section: lifecycle events and configuration examples. */
 export const HOOKS = {
   title: "Hooks — Automated Guardrails",
   description:
@@ -476,6 +513,7 @@ export const HOOKS = {
   ] as HookExample[],
 };
 
+/** Subagents section: built-in types and custom agent creation path. */
 export const SUBAGENTS = {
   title: "Subagents — Specialists on Call",
   description:
@@ -491,6 +529,7 @@ export const SUBAGENTS = {
 
 // ─── The Big Picture ────────────────────────────────────────────────────────
 
+/** The seven layers of the Claude Code system, rendered as a visual card grid. */
 export const BIG_PICTURE: BigPictureItem[] = [
   { layer: "CLAUDE.md", description: "Here's what this project is" },
   { layer: "Skills", description: "Here's domain expertise on demand" },
@@ -503,6 +542,7 @@ export const BIG_PICTURE: BigPictureItem[] = [
 
 // ─── Downloadable Skills ────────────────────────────────────────────────────
 
+/** A skill file available for download from the public directory. */
 export interface DownloadableSkill {
   name: string;
   description: string;
@@ -510,6 +550,7 @@ export interface DownloadableSkill {
   href: string;
 }
 
+/** Skills available for download in the Resources section. Files served from `/public`. */
 export const DOWNLOADABLE_SKILLS: DownloadableSkill[] = [
   {
     name: "prd-writer",
@@ -522,6 +563,7 @@ export const DOWNLOADABLE_SKILLS: DownloadableSkill[] = [
 
 // ─── Demo Projects ──────────────────────────────────────────────────────────
 
+/** A demo project showcased in the Resources section with live and source links. */
 export interface DemoProject {
   title: string;
   description: string;
@@ -529,6 +571,7 @@ export interface DemoProject {
   repoUrl: string;
 }
 
+/** Projects built with Claude Code CLI, shown as demo cards with live/repo links. */
 export const DEMO_PROJECTS: DemoProject[] = [
   {
     title: "Taco Tuesday App",
@@ -541,6 +584,7 @@ export const DEMO_PROJECTS: DemoProject[] = [
 
 // ─── Resources ──────────────────────────────────────────────────────────────
 
+/** External resource links rendered as cards at the bottom of the Resources section. */
 export const RESOURCES: Resource[] = [
   {
     title: "Claude Code Documentation",
@@ -581,6 +625,7 @@ export const RESOURCES: Resource[] = [
 
 // ─── Footer ─────────────────────────────────────────────────────────────────
 
+/** Footer badges and talk date. */
 export const FOOTER = {
   builtWith: "Built with Claude Code CLI",
   deployedOn: "Deployed on Vercel",

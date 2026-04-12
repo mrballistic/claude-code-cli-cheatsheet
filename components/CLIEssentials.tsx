@@ -4,6 +4,7 @@ import CommandTable from './CommandTable';
 import ScrollReveal from './ScrollReveal';
 import { Zap } from 'lucide-react';
 
+/** Layer 1 section: slash commands table, keyboard shortcuts, and /powerup callout. */
 export default function CLIEssentials() {
   return (
     <section className="px-6 py-16 max-w-4xl mx-auto">

@@ -5,6 +5,7 @@ import CommandTable from './CommandTable';
 import ScrollReveal from './ScrollReveal';
 import { ExternalLink } from 'lucide-react';
 
+/** Layer 6 section: adding servers, scopes table, common servers, managing commands, and FastMCP example. */
 export default function MCPServers() {
   return (
     <section className="px-6 py-16 max-w-4xl mx-auto">

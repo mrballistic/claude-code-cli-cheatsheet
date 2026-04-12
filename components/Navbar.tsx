@@ -4,6 +4,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { NAV_ITEMS } from '@/lib/constants';
 import { Menu, X } from 'lucide-react';
 
+/**
+ * Fixed top navigation bar with backdrop blur. Uses Intersection Observer
+ * to highlight the active section on scroll. Collapses to a hamburger
+ * menu on mobile (< 768px).
+ */
 export default function Navbar() {
   const [activeId, setActiveId] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);

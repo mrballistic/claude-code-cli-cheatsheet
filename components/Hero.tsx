@@ -1,5 +1,9 @@
 import { HERO } from '@/lib/constants';
 
+/**
+ * Full-viewport hero section with title (blinking cursor), subtitle,
+ * core insight quote, and quick-jump navigation buttons.
+ */
 export default function Hero() {
   return (
     <section className="relative min-h-[80vh] flex items-center justify-center px-6 py-24">

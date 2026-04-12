@@ -3,6 +3,11 @@
 import { useState, useCallback } from 'react';
 import { MODE_CYCLE_ORDER } from '@/lib/constants';
 
+/**
+ * Interactive Shift+Tab demo widget. Displays the four cycleable permission
+ * modes as pills and highlights the active one with a glow effect.
+ * Clicking the "Shift+Tab" button advances to the next mode.
+ */
 export default function ModeCycler() {
   const [activeIndex, setActiveIndex] = useState(0);
 

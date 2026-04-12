@@ -1,6 +1,11 @@
 import { SUPERPOWERS } from '@/lib/constants';
 import { ChevronRight } from 'lucide-react';
 
+/**
+ * Horizontal pipeline visualization of the Superpowers 8-step workflow.
+ * Each step is a card with name and description, connected by chevron arrows.
+ * Scrolls horizontally on mobile.
+ */
 export default function WorkflowPipeline() {
   return (
     <div className="overflow-x-auto pb-2">

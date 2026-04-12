@@ -2,6 +2,11 @@
 
 import { useEffect, useRef, type ReactNode } from 'react';
 
+/**
+ * Intersection Observer wrapper that fades in + slides up its children
+ * on first scroll into view. Uses CSS transitions (no JS animation library).
+ * Each section is wrapped in this component for staggered reveal on scroll.
+ */
 interface ScrollRevealProps {
   children: ReactNode;
   className?: string;

@@ -5,6 +5,10 @@ import CopyButton from './CopyButton';
 import ScrollReveal from './ScrollReveal';
 import { Download, ExternalLink, Code } from 'lucide-react';
 
+/**
+ * Styled link button with an adjacent copy-to-clipboard control.
+ * Used for demo project "Live Site" and "Source Code" links.
+ */
 function LinkButton({ href, label, icon: Icon, accent = false }: {
   href: string;
   label: string;
@@ -33,6 +37,7 @@ function LinkButton({ href, label, icon: Icon, accent = false }: {
   );
 }
 
+/** Resources section: demo projects, downloadable skills, and external resource link cards. */
 export default function Resources() {
   return (
     <section className="px-6 py-16 max-w-4xl mx-auto">
