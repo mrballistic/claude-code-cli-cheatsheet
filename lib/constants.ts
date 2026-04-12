@@ -147,8 +147,8 @@ export const HERO = {
 
 /** Install command, launch commands, and version check for the Getting Started section. */
 export const GETTING_STARTED = {
-  installCommand: "npm install -g @anthropic-ai/claude-code",
-  requirement: "Requires Node.js 20+",
+  installCommand: "curl -fsSL https://claude.ai/install.sh | bash",
+  requirement: "Works on macOS, Linux, and WSL",
   launchCommands: [
     { command: "claude", description: "Start interactive REPL" },
     { command: 'claude "task"', description: "Start with an initial prompt" },

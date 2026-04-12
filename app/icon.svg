@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="8" fill="#0a0a0f"/>
+  <g transform="translate(16,16)">
+    <!-- Claude-style sparkle/starburst -->
+    <path d="M0,-12 C1.5,-4 4,-1.5 12,0 C4,1.5 1.5,4 0,12 C-1.5,4 -4,1.5 -12,0 C-4,-1.5 -1.5,-4 0,-12Z" fill="#22d3ee"/>
+    <!-- Small accent sparkle -->
+    <circle cx="7" cy="-7" r="1.5" fill="#a78bfa"/>
+  </g>
+</svg>
