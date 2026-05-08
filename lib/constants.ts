@@ -166,15 +166,13 @@ export const SLASH_COMMANDS: SlashCommand[] = [
   { command: "/help", description: "Show all available commands" },
   { command: "/cost", description: "Display token usage and cost for the current session" },
   { command: "/compact", description: "Compress conversation context to save tokens" },
-  { command: "/effort", description: "Set thinking effort level (low / medium / high)" },
-  { command: "/powerup", description: "Inject system prompt enhancements from community", isNew: true },
   { command: "/mcp", description: "View and manage MCP server connections" },
   { command: "/agents", description: "List available subagent types" },
   { command: "/hooks", description: "View configured automation hooks" },
-  { command: "/plugins", description: "Manage installed plugins", isNew: true },
-  { command: "/fast", description: "Toggle fast mode (same model, faster output)", isNew: true },
+  { command: "/plugin", description: "Manage installed plugins and marketplaces", isNew: true },
+  { command: "/fast", description: "Toggle fast mode on Opus — same model, faster output", isNew: true },
+  { command: "/review", description: "Run a code review on pending changes" },
   { command: "/clear", description: "Clear conversation history" },
-  { command: "/usage", description: "Show API usage statistics" },
 ];
 
 /** Keyboard shortcuts for the CLI Essentials section. */
@@ -184,12 +182,12 @@ export const KEYBOARD_SHORTCUTS: KeyboardShortcut[] = [
   { keys: "Up Arrow", description: "Cycle through input history" },
 ];
 
-/** Highlighted callout box for the `/powerup` command. */
-export const POWERUP_CALLOUT = {
-  text: "If you remember one command, remember this one.",
-  command: "/powerup",
+/** Highlighted callout box for the `/fast` command. */
+export const FAST_CALLOUT = {
+  text: "Same model, faster output.",
+  command: "/fast",
   description:
-    "Injects community-curated system prompt enhancements that dramatically improve Claude's output quality.",
+    "Toggles fast mode on Opus — same intelligence, faster generation. Great for iterative work where you want quick turnarounds.",
 };
 
 // ─── Layer 2: Permission Modes ──────────────────────────────────────────────
@@ -204,19 +202,19 @@ export const PERMISSION_MODES: PermissionMode[] = [
   },
   {
     mode: "Auto-accept Edits",
-    flag: "--auto-accept-edits",
+    flag: "(none)",
     behavior: "Auto-approves file edits, still asks for commands",
     useWhen: "Trusted file changes, want command oversight",
   },
   {
     mode: "Auto",
-    flag: "--auto",
+    flag: "(none)",
     behavior: "Runs autonomously with safety classifier",
     useWhen: "Well-scoped tasks with clear CLAUDE.md",
   },
   {
     mode: "Plan",
-    flag: "--plan",
+    flag: "(none)",
     behavior: "Read-only analysis, no file modifications",
     useWhen: "Architecture review, understanding code",
   },
@@ -347,9 +345,8 @@ is auto-invoked.`,
     },
   ] as SkillConcept[],
   resources: [
-    { title: "Official Skills Repo", url: "https://github.com/anthropics/claude-code-skills" },
-    { title: "Community Skills", url: "https://github.com/anthropics/awesome-claude-code" },
-    { title: "Install via CLI", url: "npx @anthropic-ai/claude-code-skills install" },
+    { title: "Official Skills Repo", url: "https://github.com/anthropics/skills" },
+    { title: "Community Skills", url: "https://github.com/hesreallyhim/awesome-claude-code" },
   ],
 };
 
@@ -360,7 +357,8 @@ export const SUPERPOWERS = {
   title: "Superpowers Plugin",
   subtitle: "By Jesse Vincent / Prime Radiant — a complete development methodology as a plugin.",
   installCommands: [
-    "claude plugins:add @anthropic-ai/superpowers",
+    "/plugin marketplace add obra/superpowers",
+    "/plugin install superpowers@superpowers",
   ],
   workflow: [
     { name: "Brainstorm", description: "Explore ideas and requirements" },
@@ -485,13 +483,18 @@ export const HOOKS = {
   examples: [
     {
       title: "Auto-format on Save",
-      description: "Run Prettier after every file write",
+      description: "Run Prettier after every file write (file path read from stdin JSON)",
       code: `{
   "hooks": {
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
-        "command": "npx prettier --write $CLAUDE_FILE_PATH"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write"
+          }
+        ]
       }
     ]
   }
@@ -504,7 +507,12 @@ export const HOOKS = {
   "hooks": {
     "Stop": [
       {
-        "command": "osascript -e 'display notification \\"Claude is done\\" with title \\"Claude Code\\"'"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \\"Claude is done\\" with title \\"Claude Code\\"'"
+          }
+        ]
       }
     ]
   }
@@ -519,9 +527,9 @@ export const SUBAGENTS = {
   description:
     "Claude can spawn specialized sub-agents to handle specific tasks in parallel, each with their own context and tools.",
   builtInTypes: [
-    { name: "Explore", description: "Fast codebase exploration and search" },
+    { name: "Explore", description: "Fast read-only codebase search and file lookups" },
     { name: "Plan", description: "Architecture and implementation planning" },
-    { name: "Code Review", description: "Automated code review against standards" },
+    { name: "general-purpose", description: "Multi-step research and tasks across the codebase" },
   ] as SubagentType[],
   customPath:
     "Define custom subagent types via skills or the Agent tool with specific prompts and tool restrictions.",
@@ -629,5 +637,5 @@ export const RESOURCES: Resource[] = [
 export const FOOTER = {
   builtWith: "Built with Claude Code CLI",
   deployedOn: "Deployed on Vercel",
-  talkDate: "April 2025",
+  talkDate: "May 2026",
 };

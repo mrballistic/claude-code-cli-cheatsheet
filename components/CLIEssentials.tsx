@@ -1,10 +1,10 @@
-import { SLASH_COMMANDS, KEYBOARD_SHORTCUTS, POWERUP_CALLOUT } from '@/lib/constants';
+import { SLASH_COMMANDS, KEYBOARD_SHORTCUTS, FAST_CALLOUT } from '@/lib/constants';
 import SectionHeading from './SectionHeading';
 import CommandTable from './CommandTable';
 import ScrollReveal from './ScrollReveal';
 import { Zap } from 'lucide-react';
 
-/** Layer 1 section: slash commands table, keyboard shortcuts, and /powerup callout. */
+/** Layer 1 section: slash commands table, keyboard shortcuts, and /fast callout. */
 export default function CLIEssentials() {
   return (
     <section className="px-6 py-16 max-w-4xl mx-auto">
@@ -50,14 +50,14 @@ export default function CLIEssentials() {
                 className="text-lg font-bold"
                 style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-primary)' }}
               >
-                {POWERUP_CALLOUT.command}
+                {FAST_CALLOUT.command}
               </code>
             </div>
             <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
-              {POWERUP_CALLOUT.text}
+              {FAST_CALLOUT.text}
             </p>
             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-              {POWERUP_CALLOUT.description}
+              {FAST_CALLOUT.description}
             </p>
           </div>
         </div>
