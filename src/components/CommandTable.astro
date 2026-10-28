@@ -1,0 +1,60 @@
+---
+/**
+ * Two-column reference table: a command (or key combo) and what it does.
+ * Commands get a copy button; key combos render as <kbd>.
+ */
+import CopyButton from './CopyButton.astro';
+import { UI } from '@/lib/constants';
+
+interface Row {
+  term: string;
+  description: string;
+}
+
+interface Props {
+  rows: Row[];
+  termHeader: string;
+  descriptionHeader: string;
+  /** "code" rows are copyable commands; "keys" rows are keyboard shortcuts. */
+  kind?: 'code' | 'keys';
+  caption?: string;
+}
+
+const { rows, termHeader, descriptionHeader, kind = 'code', caption } = Astro.props;
+---
+
+<div class="overflow-x-auto">
+  <table class="ref-table stack">
+    {caption && <caption class="sr-only">{caption}</caption>}
+    <thead>
+      <tr>
+        <th scope="col">{termHeader}</th>
+        <th scope="col">{descriptionHeader}</th>
+        {kind === 'code' && <th scope="col"><span class="sr-only">{UI.copy}</span></th>}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr>
+          <td>
+            {kind === 'keys' ? (
+              row.term.split(' ').map((k) => <kbd class="mr-1">{k}</kbd>)
+            ) : (
+              <code class="cell-code">{row.term}</code>
+            )}
+          </td>
+          <td class="desc">{row.description}</td>
+          {kind === 'code' && (
+            <td class="w-0 !p-0 align-middle">
+              <CopyButton text={row.term} label={`Copy: ${row.term}`} />
+            </td>
+          )}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  td :global(.copy-btn) { border-left: 0; min-height: 2.5rem; }
+</style>

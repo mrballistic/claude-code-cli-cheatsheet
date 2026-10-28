@@ -1,0 +1,115 @@
+---
+/**
+ * Slim sticky top bar. Below lg it carries a "Sections" disclosure; at lg the
+ * section list lives in the sidebar instead.
+ */
+import { Icon } from 'astro-icon/components';
+import { FOOTER, SECTIONS, UI } from '@/lib/constants';
+---
+
+<header class="topbar">
+  <div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 md:px-8">
+    <a href="#page-title" class="brand">
+      <span class="text-accent" aria-hidden="true">✻</span>
+      <span>{UI.brand}</span>
+    </a>
+    <a href={FOOTER.authorUrl} class="byline hidden lg:inline-flex">{FOOTER.byline} {FOOTER.author}</a>
+    <button
+      type="button"
+      class="menu-btn lg:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-sections"
+      data-menu-btn
+      data-label-open={UI.menuOpen}
+      data-label-close={UI.menuClose}
+    >
+      <Icon name="lucide:list" width={18} height={18} aria-hidden="true" />
+      <span data-menu-label>{UI.menuOpen}</span>
+    </button>
+  </div>
+
+  <nav id="mobile-sections" class="mobile-panel lg:hidden" aria-label={UI.mapTitle} hidden>
+    <ul class="mx-auto max-w-6xl px-5 pb-4 md:px-8">
+      {SECTIONS.map((s) => (
+        <li>
+          <a href={`#${s.id}`} class="mobile-link" data-spy-link={s.id}>
+            <span class="font-mono text-sm">/{s.id}</span>
+            <span class="text-sm muted">{s.purpose}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+  const panel = document.getElementById('mobile-sections');
+  const label = btn?.querySelector('[data-menu-label]');
+
+  const setOpen = (open: boolean) => {
+    if (!btn || !panel) return;
+    btn.setAttribute('aria-expanded', String(open));
+    panel.hidden = !open;
+    if (label) label.textContent = (open ? btn.dataset.labelClose : btn.dataset.labelOpen) ?? '';
+  };
+
+  btn?.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+  panel?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && btn?.getAttribute('aria-expanded') === 'true') {
+      setOpen(false);
+      btn.focus();
+    }
+  });
+</script>
+
+<style>
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--ground) 92%, transparent);
+    border-bottom: 1px solid var(--rule);
+  }
+  @supports (backdrop-filter: blur(1px)) {
+    .topbar { backdrop-filter: blur(8px); }
+  }
+  .brand {
+    display: inline-flex;
+    gap: 0.75ch;
+    align-items: center;
+    min-height: 2.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .byline { font-size: 0.875rem; color: var(--ink-3); text-decoration: none; min-height: 2.75rem; align-items: center; }
+  .byline:hover { color: var(--accent); }
+  .menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 0.75rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    cursor: pointer;
+  }
+  @media (min-width: 1024px) { .menu-btn, .mobile-panel { display: none; } }
+  .menu-btn[aria-expanded='true'] { border-color: var(--accent); color: var(--accent); }
+  .mobile-panel { border-top: 1px solid var(--rule); max-height: calc(100dvh - 3.5rem); overflow-y: auto; }
+  .mobile-link {
+    display: grid;
+    grid-template-columns: 8.5rem 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding: 0.625rem 0;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+  }
+  .mobile-link[aria-current='true'] span:first-child { color: var(--accent); }
+</style>

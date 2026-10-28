@@ -1,0 +1,19 @@
+---
+/** Section h2 with a shareable anchor link and an optional lede. */
+import { UI } from '@/lib/constants';
+
+interface Props {
+  id: string;
+  title: string;
+  lede?: string;
+}
+
+const { id, title, lede } = Astro.props;
+---
+
+<header class="mb-8">
+  <h2 id={id} class="section-title">
+    {title}<a href={`#${id}`} class="anchor" aria-label={`${UI.sectionLinkAria}: ${title}`}>#</a>
+  </h2>
+  {lede && <p class="lede mt-3">{lede}</p>}
+</header>

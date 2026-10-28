@@ -1,0 +1,76 @@
+---
+/**
+ * Sticky section list for lg screens, styled as the slash menu. Also runs the
+ * scroll-spy for every [data-spy-link] on the page (sidebar and mobile panel).
+ */
+import { SECTIONS, UI } from '@/lib/constants';
+---
+
+<nav class="sidebar hidden lg:block" aria-label={UI.mapTitle}>
+  <p class="meta-label mb-3 px-3">{UI.mapTitle}</p>
+  <ul>
+    {SECTIONS.map((s) => (
+      <li>
+        <a href={`#${s.id}`} class="side-link" data-spy-link={s.id}>/{s.id}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<script>
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-spy-link]');
+  const sections = Array.from(links)
+    .map((a) => a.dataset.spyLink)
+    .filter((id, i, all): id is string => !!id && all.indexOf(id) === i)
+    .map((id) => document.getElementById(id)?.closest('section'))
+    .filter((el): el is HTMLElement => !!el);
+
+  const setCurrent = (id: string | null) => {
+    links.forEach((a) => {
+      if (a.dataset.spyLink === id) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
+  };
+
+  // A section is current once its top passes 30% of the viewport; the last
+  // one to do so wins. Above the first section nothing is current.
+  const update = () => {
+    const line = window.innerHeight * 0.3;
+    let current: string | null = null;
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top <= line) current = section.querySelector('h2')?.id ?? null;
+    }
+    setCurrent(current);
+  };
+
+  let queued = false;
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        update();
+      });
+    },
+    { passive: true },
+  );
+  update();
+</script>
+
+<style>
+  .sidebar { position: sticky; top: 5rem; }
+  .side-link {
+    display: block;
+    padding: 0.3125rem 0.75rem;
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--ink-3);
+    text-decoration: none;
+    transition: color 120ms linear, background-color 120ms linear;
+  }
+  .side-link:hover { color: var(--ink); }
+  .side-link[aria-current='true'] { color: var(--accent); background: var(--accent-wash); }
+</style>

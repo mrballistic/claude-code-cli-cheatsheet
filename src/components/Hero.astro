@@ -1,0 +1,84 @@
+---
+/**
+ * First viewport, drawn in Claude Code’s own interface: the welcome box, the
+ * install command, the Shift+Tab mode box, and a slash-menu map of the page.
+ */
+import Cmd from './Cmd.astro';
+import ModeCycler from './ModeCycler.astro';
+import { HERO, SECTIONS, UI } from '@/lib/constants';
+---
+
+<section class="mx-auto max-w-6xl px-5 pt-10 pb-16 md:px-8 md:pt-16 lg:pb-24" aria-labelledby="page-title">
+  <div class="grid gap-10 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:gap-14">
+    <div class="min-w-0">
+      <div class="welcome box box-accent">
+        <h1 id="page-title" class="hero-title"><span class="mark" aria-hidden="true">✻</span>{HERO.title}</h1>
+        <p class="lede mt-4 text-lg">{HERO.promise}</p>
+        <p class="mt-6 font-mono text-xs muted">{HERO.welcome}<br />{HERO.cwd}</p>
+      </div>
+
+      <p class="meta-label mt-8 mb-2">{HERO.installLabel}</p>
+      <Cmd command={HERO.installCommand} />
+
+      <div class="mt-8">
+        <ModeCycler />
+      </div>
+
+      <p class="response mt-8">
+        <span class="text-accent" aria-hidden="true">⏺</span>
+        <span>{HERO.insight}</span>
+      </p>
+    </div>
+
+    <nav class="slash-menu self-start" aria-label={UI.mapTitle}>
+      <p class="slash-input font-mono text-sm">
+        <span class="text-accent" aria-hidden="true">&gt;</span> /<span class="cursor" aria-hidden="true"></span>
+        <span class="sr-only">{UI.mapTitle}</span>
+      </p>
+      <ul class="mt-2">
+        {SECTIONS.map((s) => (
+          <li>
+            <a href={`#${s.id}`} class="slash-item">
+              <span class="slash-name">/{s.id}</span>
+              <span class="slash-purpose">{s.purpose}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="meta-label mt-3 px-3" aria-hidden="true">{HERO.mapHint}</p>
+    </nav>
+  </div>
+</section>
+
+<style>
+  .hero-title {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(2.125rem, 1.4rem + 3vw, 3.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+  }
+  .mark { color: var(--accent); margin-right: 0.35em; font-weight: 400; }
+  .welcome { padding: 1.5rem 1.5rem 1.25rem; }
+  @media (min-width: 768px) { .welcome { padding: 2rem 2.25rem 1.5rem; } }
+
+  .response { display: flex; gap: 1ch; font-family: var(--font-mono); font-size: 0.9375rem; color: var(--ink); }
+
+  .slash-input { padding: 0.625rem 0.75rem; border: 1px solid var(--rule-strong); border-radius: var(--radius-box); }
+  .slash-item {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    gap: 1rem;
+    padding: 0.4375rem 0.75rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-size: 0.9375rem;
+  }
+  .slash-name { font-family: var(--font-mono); font-size: 0.875rem; color: var(--ink); }
+  .slash-purpose { color: var(--ink-3); }
+  /* The slash menu’s selected row: struck forward in the accent. */
+  .slash-item:hover, .slash-item:focus-visible { background: var(--accent-wash); outline-offset: 0; }
+  .slash-item:hover .slash-name, .slash-item:focus-visible .slash-name { color: var(--accent); }
+  .slash-item:hover .slash-purpose, .slash-item:focus-visible .slash-purpose { color: var(--ink-2); }
+  @media (max-width: 420px) { .slash-item { grid-template-columns: 8rem 1fr; } }
+</style>

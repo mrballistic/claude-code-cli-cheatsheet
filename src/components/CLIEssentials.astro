@@ -1,0 +1,40 @@
+---
+/** Slash commands, keyboard shortcuts, and the fast-mode callout. */
+import Cmd from './Cmd.astro';
+import CommandTable from './CommandTable.astro';
+import SectionHeading from './SectionHeading.astro';
+import { COMMANDS_COPY, FAST_CALLOUT, KEYBOARD_SHORTCUTS, SLASH_COMMANDS } from '@/lib/constants';
+---
+
+<section class="section reveal">
+  <SectionHeading id="commands" title={COMMANDS_COPY.title} lede={COMMANDS_COPY.intro} />
+
+  <div class="grid gap-12 xl:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] xl:gap-10">
+    <div class="min-w-0">
+      <h3 class="sub-title mb-4">{COMMANDS_COPY.slashTitle}</h3>
+      <CommandTable
+        rows={SLASH_COMMANDS.map((c) => ({ term: c.command, description: c.description }))}
+        termHeader={COMMANDS_COPY.commandHeader}
+        descriptionHeader={COMMANDS_COPY.descriptionHeader}
+        caption={COMMANDS_COPY.slashTitle}
+      />
+    </div>
+
+    <div class="min-w-0">
+      <h3 class="sub-title mb-4">{COMMANDS_COPY.shortcutsTitle}</h3>
+      <CommandTable
+        rows={KEYBOARD_SHORTCUTS.map((k) => ({ term: k.keys, description: k.description }))}
+        termHeader={COMMANDS_COPY.keysHeader}
+        descriptionHeader={COMMANDS_COPY.descriptionHeader}
+        kind="keys"
+        caption={COMMANDS_COPY.shortcutsTitle}
+      />
+
+      <aside class="box mt-10">
+        <h3 class="font-bold">{FAST_CALLOUT.title}</h3>
+        <p class="mt-2 text-sm text-ink-2">{FAST_CALLOUT.description}</p>
+        <Cmd command={FAST_CALLOUT.command} prompt="repl" class="mt-4" />
+      </aside>
+    </div>
+  </div>
+</section>

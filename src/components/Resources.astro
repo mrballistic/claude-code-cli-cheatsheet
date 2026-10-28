@@ -1,0 +1,51 @@
+---
+/** Links: the skill download from the talk, then external reading. */
+import { Icon } from 'astro-icon/components';
+import LinkList from './LinkList.astro';
+import SectionHeading from './SectionHeading.astro';
+import { DOWNLOADABLE_SKILLS, RESOURCES, RESOURCES_COPY } from '@/lib/constants';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<section class="section reveal">
+  <SectionHeading id="resources" title={RESOURCES_COPY.title} lede={RESOURCES_COPY.intro} />
+
+  <h3 class="sub-title mb-4">{RESOURCES_COPY.downloadTitle}</h3>
+  <ul class="grid gap-4">
+    {DOWNLOADABLE_SKILLS.map((skill) => (
+      <li class="box flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="font-mono font-medium">{skill.name}</p>
+          <p class="mt-1 text-sm text-ink-2 prose-measure">{skill.description}</p>
+        </div>
+        <a href={`${base}/${skill.filename}`} download class="download-btn">
+          <Icon name="lucide:download" width={16} height={16} aria-hidden="true" />
+          {RESOURCES_COPY.downloadLabel}
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <h3 class="sub-title mt-12 mb-2">{RESOURCES_COPY.linksTitle}</h3>
+  <LinkList items={RESOURCES} columns />
+</section>
+
+<style>
+  .download-btn {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 160ms var(--ease-out);
+  }
+  .download-btn:hover { background: var(--accent-hover); color: var(--accent-ink); }
+</style>

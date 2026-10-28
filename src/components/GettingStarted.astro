@@ -1,0 +1,28 @@
+---
+/** Install options and launch commands. */
+import Cmd from './Cmd.astro';
+import CommandTable from './CommandTable.astro';
+import SectionHeading from './SectionHeading.astro';
+import { COMMANDS_COPY, GETTING_STARTED } from '@/lib/constants';
+---
+
+<section class="section reveal">
+  <SectionHeading id="start" title={GETTING_STARTED.title} lede={GETTING_STARTED.intro} />
+
+  <ul class="grid gap-3">
+    {GETTING_STARTED.installs.map((c) => (
+      <li class="grid gap-1.5 md:grid-cols-[10rem_minmax(0,1fr)] md:items-center md:gap-4">
+        <span class="text-sm muted">{c.description}</span>
+        <Cmd command={c.command} />
+      </li>
+    ))}
+  </ul>
+
+  <h3 class="sub-title mt-12 mb-4">{GETTING_STARTED.launchTitle}</h3>
+  <CommandTable
+    rows={GETTING_STARTED.launchCommands.map((c) => ({ term: c.command, description: c.description }))}
+    termHeader={COMMANDS_COPY.commandHeader}
+    descriptionHeader={COMMANDS_COPY.descriptionHeader}
+    caption={GETTING_STARTED.launchTitle}
+  />
+</section>

@@ -1,0 +1,38 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Navbar from '@/components/Navbar.astro';
+import Hero from '@/components/Hero.astro';
+import Sidebar from '@/components/Sidebar.astro';
+import GettingStarted from '@/components/GettingStarted.astro';
+import CLIEssentials from '@/components/CLIEssentials.astro';
+import PermissionModes from '@/components/PermissionModes.astro';
+import ClaudeMd from '@/components/ClaudeMd.astro';
+import Skills from '@/components/Skills.astro';
+import Plugins from '@/components/Plugins.astro';
+import MCPServers from '@/components/MCPServers.astro';
+import Hooks from '@/components/Hooks.astro';
+import Subagents from '@/components/Subagents.astro';
+import Resources from '@/components/Resources.astro';
+import Footer from '@/components/Footer.astro';
+---
+
+<Layout>
+  <Navbar />
+  <Hero />
+  <div class="mx-auto grid max-w-6xl gap-10 border-t border-rule px-5 md:px-8 lg:grid-cols-[11rem_minmax(0,1fr)]">
+    <div class="pt-14"><Sidebar /></div>
+    <main id="content" tabindex="-1" class="min-w-0 outline-none">
+      <GettingStarted />
+      <CLIEssentials />
+      <PermissionModes />
+      <ClaudeMd />
+      <Skills />
+      <Plugins />
+      <MCPServers />
+      <Hooks />
+      <Subagents />
+      <Resources />
+    </main>
+  </div>
+  <Footer />
+</Layout>

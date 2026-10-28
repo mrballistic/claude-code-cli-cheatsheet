@@ -1,0 +1,15 @@
+---
+/** Footer: origin and freshness, byline, and what built it. */
+import { FOOTER } from '@/lib/constants';
+---
+
+<footer class="border-t border-rule">
+  <div class="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-10 text-sm md:flex-row md:items-center md:justify-between md:px-8">
+    <p class="text-ink-2">
+      {FOOTER.origin} · {FOOTER.updated}
+    </p>
+    <p class="muted">
+      {FOOTER.byline}{' '}<a href={FOOTER.authorUrl} class="text-ink underline">{FOOTER.author}</a>{` · ${FOOTER.builtWith} · `}<a href={FOOTER.astroUrl} target="_blank" rel="noopener noreferrer" class="underline">{FOOTER.madeWith}</a>
+    </p>
+  </div>
+</footer>

@@ -1,0 +1,27 @@
+---
+/** Subagents: the built-in types and how to write your own. */
+import FileBlock from './FileBlock.astro';
+import SectionHeading from './SectionHeading.astro';
+import { SUBAGENTS } from '@/lib/constants';
+---
+
+<section class="section reveal">
+  <SectionHeading id="subagents" title={SUBAGENTS.title} lede={SUBAGENTS.description} />
+
+  <div class="grid gap-10 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+    <div class="min-w-0">
+      <h3 class="sub-title mb-4">{SUBAGENTS.builtInTitle}</h3>
+      <dl>
+        {SUBAGENTS.builtInTypes.map((t) => (
+          <div class="flex flex-wrap gap-x-4 border-b border-rule py-2 last:border-b-0">
+            <dt><code class="cell-code">{t.name}</code></dt>
+            <dd class="text-ink-2">{t.description}</dd>
+          </div>
+        ))}
+      </dl>
+      <h3 class="sub-title mt-10 mb-3">{SUBAGENTS.customTitle}</h3>
+      <p class="text-ink-2 prose-measure">{SUBAGENTS.customDescription}</p>
+    </div>
+    <FileBlock filename={SUBAGENTS.customFilename} code={SUBAGENTS.customExample} />
+  </div>
+</section>

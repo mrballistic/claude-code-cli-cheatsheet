@@ -1,0 +1,19 @@
+---
+/** A multi-line file example, headed by its real filename. */
+import CopyButton from './CopyButton.astro';
+
+interface Props {
+  filename: string;
+  code: string;
+}
+
+const { filename, code } = Astro.props;
+---
+
+<figure class="file">
+  <figcaption class="file-head">
+    <span class="truncate">{filename}</span>
+    <CopyButton text={code} label={`Copy ${filename}`} />
+  </figcaption>
+  <pre tabindex="0"><code>{code}</code></pre>
+</figure>

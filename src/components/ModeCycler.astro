@@ -1,0 +1,119 @@
+---
+/**
+ * Shift+Tab demo drawn as Claude Code’s input box and status line. Every mode
+ * is present as a ghost; the active one is struck forward in its own colour.
+ *
+ * Keyboard: Shift+Tab is only captured after the box is activated (click,
+ * Enter, or Space), and Tab or Esc always releases it, so it never traps
+ * reverse tabbing. The button below does the same for touch.
+ */
+import { MODE_CYCLE, MODES_COPY } from '@/lib/constants';
+const [first] = MODE_CYCLE;
+---
+
+<div class="cycler" data-cycler>
+  <p id="cycler-label" class="meta-label mb-2">{MODES_COPY.demoLabel}</p>
+  <div
+    class="input-box"
+    tabindex="0"
+    role="group"
+    aria-labelledby="cycler-label"
+    aria-describedby="cycler-summary"
+    data-box
+  >
+    <span class="text-accent" aria-hidden="true">&gt;</span>
+    <span class="muted">{MODES_COPY.demoPlaceholder}</span>
+  </div>
+
+  <div class="status" aria-hidden="true">
+    {MODE_CYCLE.map((m, i) => (
+      <span class="status-mode" data-mode={m.id} data-active={i === 0 ? 'true' : 'false'}>{m.status}</span>
+    ))}
+  </div>
+
+  <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+    <button type="button" class="cycle-btn" data-cycle-btn><kbd>{MODES_COPY.demoButton}</kbd></button>
+    <p id="cycler-summary" class="text-sm text-ink-2" aria-live="polite" data-summary>{first?.summary}</p>
+  </div>
+  <p class="meta-label mt-2">{MODES_COPY.demoNote}</p>
+</div>
+
+<script>
+  import { MODE_CYCLE } from '@/lib/constants';
+
+  document.querySelectorAll<HTMLElement>('[data-cycler]').forEach((root) => {
+    const box = root.querySelector<HTMLElement>('[data-box]');
+    const btn = root.querySelector<HTMLButtonElement>('[data-cycle-btn]');
+    const summary = root.querySelector<HTMLElement>('[data-summary]');
+    const modes = root.querySelectorAll<HTMLElement>('.status-mode');
+    let index = 0;
+    let armed = false;
+
+    const advance = () => {
+      index = (index + 1) % MODE_CYCLE.length;
+      modes.forEach((el, i) => (el.dataset.active = String(i === index)));
+      if (summary) summary.textContent = MODE_CYCLE[index]?.summary ?? '';
+    };
+    const arm = (on: boolean) => {
+      armed = on;
+      box?.toggleAttribute('data-armed', on);
+    };
+
+    btn?.addEventListener('click', advance);
+    box?.addEventListener('click', () => arm(true));
+    box?.addEventListener('blur', () => arm(false));
+    box?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        arm(true);
+      } else if (e.key === 'Escape') {
+        arm(false);
+      } else if (e.key === 'Tab' && e.shiftKey && armed) {
+        e.preventDefault();
+        advance();
+      }
+    });
+  });
+</script>
+
+<style>
+  .input-box {
+    display: flex;
+    gap: 1ch;
+    padding: 0.75rem 0.875rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius-box);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    cursor: text;
+    transition: border-color 160ms var(--ease-out);
+  }
+  .input-box[data-armed] { border-color: var(--accent); }
+
+  .status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+    padding: 0.5rem 0.875rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+  }
+  .status-mode {
+    color: var(--ink-3);
+    opacity: 0.3;
+    padding-bottom: 0.125rem;
+    border-bottom: 2px solid transparent;
+    transition: opacity 120ms linear, color 120ms linear, border-color 120ms linear;
+  }
+  /* Struck forward: full strength, bold, underscored in the mode's own colour
+     (Claude Code's status line colours each mode; see the surface brief). */
+  .status-mode[data-active='true'] { opacity: 1; font-weight: 700; border-bottom-color: currentColor; }
+  .status-mode[data-mode='default'][data-active='true'] { color: var(--ink); }
+  .status-mode[data-mode='acceptEdits'][data-active='true'] { color: var(--mode-edits); }
+  .status-mode[data-mode='plan'][data-active='true'] { color: var(--mode-plan); }
+  .status-mode[data-mode='auto'][data-active='true'] { color: var(--accent); }
+
+  .cycle-btn { min-height: 2.75rem; cursor: pointer; }
+  .cycle-btn kbd { font-size: 0.8125rem; padding: 0.375rem 0.625rem; }
+  .cycle-btn:hover kbd { border-color: var(--accent); color: var(--accent); }
+</style>

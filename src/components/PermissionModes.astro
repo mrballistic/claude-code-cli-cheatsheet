@@ -1,0 +1,82 @@
+---
+/** The six permission modes as one reference table, plus auto mode details. */
+import Cmd from './Cmd.astro';
+import SectionHeading from './SectionHeading.astro';
+import { AUTO_MODE, MODES_COPY, PERMISSION_MODES } from '@/lib/constants';
+---
+
+<section class="section reveal">
+  <SectionHeading id="modes" title={MODES_COPY.title} lede={MODES_COPY.intro} />
+
+  <div class="overflow-x-auto">
+    <table class="ref-table modes-table">
+      <caption class="sr-only">{MODES_COPY.title}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{MODES_COPY.tableMode}</th>
+          <th scope="col">{MODES_COPY.tableBehavior}</th>
+          <th scope="col">{MODES_COPY.tableUse}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {PERMISSION_MODES.map((m) => (
+          <tr class:list={[{ danger: m.danger }]}>
+            <th scope="row" class="mode-cell">
+              <span class="mode-label">
+                {m.label}
+                {m.danger && <span class="danger-tag">{MODES_COPY.dangerLabel}</span>}
+              </span>
+              <code class="mode-flag">{m.flag}</code>
+              {m.offCycle && <span class="mode-note">{m.offCycle}</span>}
+            </th>
+            <td class="desc">{m.behavior}</td>
+            <td class="desc" data-label={MODES_COPY.tableUse}>{m.useWhen}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-14">
+    <div>
+      <h3 class="sub-title">{AUTO_MODE.title}</h3>
+      <p class="mt-2 text-ink-2">{AUTO_MODE.quote}</p>
+      <dl class="mt-5 grid gap-5 lg:grid-cols-2 lg:gap-10">
+        {AUTO_MODE.details.map((d) => (
+          <div>
+            <dt class="font-bold">{d.title}</dt>
+            <dd class="mt-1 text-ink-2 prose-measure">{d.description}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+    <ul class="mt-8 grid gap-4">
+      {AUTO_MODE.commands.map((c) => (
+        <li>
+          <p class="mb-1.5 text-sm muted">{c.description}</p>
+          <Cmd command={c.command} />
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .mode-cell { text-align: left; font-weight: 400; white-space: normal; }
+  @media (min-width: 640px) {
+    .modes-table { min-width: 44rem; }
+    .mode-cell { width: 17rem; }
+  }
+  .mode-label { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-weight: 700; color: var(--ink); }
+  .mode-flag { display: block; margin-top: 0.25rem; font-size: 0.8125rem; color: var(--ink-2); }
+  .mode-note { display: block; margin-top: 0.125rem; font-size: 0.8125rem; color: var(--ink-3); }
+  .danger .mode-label, .danger .mode-flag { color: var(--danger); }
+  .danger-tag {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    border: 1px solid var(--danger);
+    border-radius: 4px;
+    padding: 0 0.375rem;
+  }
+</style>

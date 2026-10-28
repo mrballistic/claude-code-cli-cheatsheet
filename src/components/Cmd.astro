@@ -1,0 +1,25 @@
+---
+/**
+ * A single copyable command. `$` marks a system shell; `>` marks the Claude
+ * Code prompt, drawn as a rounded box the way the TUI draws its input.
+ */
+import CopyButton from './CopyButton.astro';
+import type { PromptKind } from '@/lib/constants';
+
+interface Props {
+  command: string;
+  prompt?: PromptKind;
+  class?: string;
+}
+
+const { command, prompt = 'shell', class: className } = Astro.props;
+const glyph = prompt === 'repl' ? '>' : '$';
+---
+
+<div class:list={['cmd', className]} data-prompt={prompt}>
+  <div class="cmd-body" tabindex="0">
+    <span class="cmd-glyph" aria-hidden="true">{glyph}</span>
+    <code class="cmd-text">{command}</code>
+  </div>
+  <CopyButton text={command} label={`Copy: ${command}`} />
+</div>

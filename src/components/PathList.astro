@@ -1,0 +1,34 @@
+---
+/** A list of file paths and what each is for. */
+import type { PathNote } from '@/lib/constants';
+
+interface Props {
+  items: PathNote[];
+}
+
+const { items } = Astro.props;
+---
+
+<dl class="path-list">
+  {items.map((p) => (
+    <div class="path-row">
+      <dt><code class="cell-code">{p.path}</code></dt>
+      <dd class="text-ink-2">{p.description}</dd>
+    </div>
+  ))}
+</dl>
+
+<style>
+  .path-row {
+    display: grid;
+    gap: 0.125rem 1.25rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 0.9375rem;
+  }
+  .path-row:last-child { border-bottom: 0; }
+  .path-row code { overflow-wrap: anywhere; }
+  @media (min-width: 640px) {
+    .path-row { grid-template-columns: minmax(12rem, auto) 1fr; }
+  }
+</style>

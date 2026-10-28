@@ -1,96 +1,53 @@
-# CLAUDE.md — Claude Code CLI Talk Companion Site
+# CLAUDE.md — Claude Code CLI cheat sheet
 
 ## Project Overview
 
-A single-page Next.js 15 companion site for a Claude Code CLI Meetup talk. Dark mode only. Deployed to Vercel. All content comes from the PRD.md in the repo root — read it thoroughly before writing any code.
+A single-page Astro static site: a desk reference for the Claude Code CLI, originally the companion to Todd Greco's May 2026 meetup talk. Dark only. Builds to a static `dist/` served at https://mrballistic.com/claude-code-cli-cheatsheet/ (Astro `base` is `/claude-code-cli-cheatsheet`). Product truth is in `PRODUCT.md`; visual system in `DESIGN.md`.
 
 ## Tech Stack
 
-- Next.js 15 (App Router, TypeScript strict)
-- Tailwind CSS v4
-- lucide-react for icons
-- Google Fonts via `next/font/google`: JetBrains Mono (display/code) + Outfit (body)
-- No animation libraries — CSS transitions + Intersection Observer only
+- Astro 7 (static output, TypeScript strict). TypeScript stays on 6.x until `@astrojs/check` accepts 7 (`npm view @astrojs/check peerDependencies`).
+- Tailwind CSS 4 via `@tailwindcss/vite`; CSS variables in `src/styles/global.css` for every colour
+- `astro-icon` + `@iconify-json/lucide`
+- Google Fonts via `<link>`: JetBrains Mono (code, headings, UI chrome) + Atkinson Hyperlegible Next (prose)
+- No animation libraries, no client framework: plain `<script>` blocks in `.astro` files
 
 ## Critical Rules
 
-### Architecture
-- All text content, commands, URLs, and descriptions live in `lib/constants.ts` as typed objects — NEVER hardcode strings in JSX
-- Every section is its own component in `components/`
-- Shared UI primitives: `CodeBlock.tsx` (with copy button), `SectionHeading.tsx`, `ScrollReveal.tsx` (Intersection Observer fade-in wrapper)
-- `app/page.tsx` imports and composes all section components in order
-- `app/globals.css` contains CSS variables for the color system, base styles, and utility classes
+### Content
+- All copy, commands, URLs, and metadata live in `src/lib/constants.ts` as typed objects. Never hardcode strings in markup.
+- Facts must match https://code.claude.com/docs. When updating, re-verify commands, flags, file paths, and package names (`npm view <pkg>`) rather than trusting memory.
+- Rendered copy uses curly quotes/apostrophes; em-dashes are rare and closed up. Code strings stay straight.
+- `/llms.txt` is generated from the same constants (`src/pages/llms.txt.ts`); keep it in step when adding sections.
 
-### Styling
-- Dark mode only — no theme toggle
-- Use the exact CSS variable color system from the PRD (--bg-primary through --border-glow)
-- Tailwind for layout and spacing; CSS variables for all colors
-- Background: subtle dot grid pattern via CSS radial-gradient at ~0.03 opacity on body
-- Code blocks: monospace, left cyan border, elevated bg, copy button top-right
-- Cards: --bg-secondary bg, --border-primary border, hover glow with --border-glow
-- Section dividers: horizontal gradient line (cyan → violet → transparent)
-- "NEW" badges: pill-shaped, --accent-tertiary bg, uppercase, text-xs
+### Design (see DESIGN.md)
+- The world is Claude Code's own TUI: warm charcoal ground, warm off-white ink, one terracotta accent (#d97757) for the active and actionable. Mode colours (edits violet, plan teal, danger red) only where Claude Code uses them.
+- `$` prefixes shell commands, `>` prefixes Claude Code prompt input (rounded box). Multi-line examples are headed by their real filename. No macOS window chrome, glows, gradients, or cards-as-structure.
+- Every code block and command has an always-visible copy button (44px target).
+- Every text colour must clear 4.5:1; respect `prefers-reduced-motion`; content must be visible with JS off (`.js .reveal`).
 
-### Typography
-- Hero title: JetBrains Mono, 3rem, bold
-- Section headings: Outfit, 1.75rem, semibold
-- Subsection headings: JetBrains Mono, 1.125rem, cyan
-- Body: Outfit, 1rem, --text-primary
-- Code: JetBrains Mono, 0.875rem
-- Labels: Outfit, 0.75rem, --text-secondary, uppercase tracking-wider
-
-### Interactive Features
-1. **Copy button on every code block** — Clipboard API, icon swap (clipboard → check → revert after 2s)
-2. **Sticky nav** — backdrop-blur, scroll-spy via Intersection Observer, hamburger on mobile
-3. **Scroll reveals** — each section fades in + translateY(20px→0) on first intersection, CSS transition
-4. **Mode cycler widget** — in Permission Modes section, interactive Shift+Tab demo that cycles through mode pills
-
-### Responsive
-- Mobile-first breakpoints: default < 768px, md: 768px, lg: 1024px
-- Hamburger nav on mobile
-- Code blocks: horizontal scroll on overflow, no wrapping
-- Stack all multi-column layouts on mobile
-
-### Component Patterns
-- Use `'use client'` only on components that need interactivity (CodeBlock, Navbar, ScrollReveal, ModeCycler)
-- Server components by default for all section content
-- No `any` types — define interfaces for all data structures
-- Keep components under 150 lines — extract sub-components if needed
-
-## File Structure
-
-Follow the exact file structure from the PRD. Do not deviate.
-
-## Content Source
-
-The complete content for every section is defined in the PRD.md file. Read the "Sections" portion of the PRD carefully — it specifies exactly what goes in each section, including commands, tables, descriptions, and callout text. Transcribe all of it into `lib/constants.ts` and render from there.
-
-The cheat sheet source files (claude-code-talk-cheat-sheet.md and claude-code-talk-demo-script.md) are the canonical source for all commands, descriptions, and links. If the PRD references content, pull the exact commands and text from these source docs.
+### Components
+- Each section is its own `.astro` component in `src/components/`; keep components under 150 lines.
+- Primitives: `Cmd.astro` (one command), `FileBlock.astro` (file example), `CommandTable.astro`, `PathList.astro`, `LinkList.astro`, `CopyButton.astro`, `SectionHeading.astro`.
+- `SECTIONS` in constants drives the hero slash-menu map, the lg sidebar, the mobile menu, and scroll-spy. Section `id`s must match each `SectionHeading` id.
+- No `any` types.
 
 ## Build & Deploy
 
 ```bash
-npm run dev        # Local development
-npm run build      # Production build (must pass with zero errors)
-npx vercel --prod  # Deploy to Vercel
+npm run dev        # astro dev
+npm run check      # astro check, must be 0 errors / 0 warnings
+npm run build      # static build to dist/, must be warning-free
+npm run build:og   # regenerate public/og-image.png (sharp)
 ```
 
-## Quality Gates
-
-- `npm run build` must complete with zero errors and zero warnings
-- TypeScript strict mode — no type errors
-- All code blocks must have working copy buttons
-- Smooth scroll must work on all section nav links
-- No hydration mismatches
-- Responsive: test at 375px, 768px, 1024px, 1440px
+Deploys only on a pushed `v*` tag that is on `main` and equals `v<package.json version>` (`.github/workflows/deploy.yml`). It rsyncs `dist/` to `/var/www/html/claude-code-cli-cheatsheet/` as `mrballistic-deploy` (mrballistic.com's key), additive except for a `--delete` scoped to `_astro/`. That directory sits inside mrballistic.com's shared web root; never widen the destination or add `--delete` to the main sync. CI for pushes/PRs: `.github/workflows/ci.yml`.
 
 ## What NOT To Do
 
-- Do NOT add a light mode or theme toggle
-- Do NOT use Inter, Roboto, Arial, or system fonts
-- Do NOT use purple-on-white gradients
-- Do NOT add analytics, search, auth, or a CMS
-- Do NOT use framer-motion or any animation library
-- Do NOT hardcode content strings in component JSX
-- Do NOT skip the copy button on any code block
-- Do NOT use default Tailwind colors — use the CSS variable system
+- No light mode or theme toggle
+- No search, auth, or CMS (Google Analytics is intentional, matching mrballistic.com)
+- No animation libraries
+- No hardcoded copy in components
+- No code block without a copy button
+- No default Tailwind colours; use the CSS variables

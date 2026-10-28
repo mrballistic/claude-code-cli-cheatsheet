@@ -1,0 +1,159 @@
+# Deploys the static build when a version tag is pushed (same release model as
+# mrballistic.com and Sneaker Trail). Only tags that point at a commit on main
+# deploy, and the tag must match package.json, so anything else fails fast.
+#
+# Release:  bump "version" in package.json, commit to main, then
+#           git tag -a v<version> -m "…" && git push origin v<version>
+#
+# Manual runs: dispatch with dry_run to list every change without writing. Run
+# it from a release tag ref: the `production` environment that holds the SSH
+# key only admits v* tags, so a run from main can't reach the secrets at all.
+#
+# Server access: deploys as mrballistic-deploy with the same key mrballistic.com
+# uses (no sudo). /var/www/html is mrballistic.com's shared web root; this job
+# only ever writes below /var/www/html/claude-code-cli-cheatsheet/, which must
+# be writable by mrballistic-deploy. If the first deploy fails with
+# "Permission denied", run once on the server:
+#   sudo chown -R mrballistic-deploy:mrballistic-deploy /var/www/html/claude-code-cli-cheatsheet
+# SSH_PRIVATE_KEY and SSH_KNOWN_HOSTS live in the `production` environment.
+name: Deploy
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'List changes without writing to the server'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+# Never let two deploys rsync into the same directory at once.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  DEPLOY_HOST: 132.148.79.144
+  DEPLOY_USER: mrballistic-deploy
+  # Must match `base` in astro.config.mjs.
+  DEPLOY_PATH: /var/www/html/claude-code-cli-cheatsheet
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://mrballistic.com/claude-code-cli-cheatsheet/
+    steps:
+      # Keeps its credentials: the on-main check below runs git fetch.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Only deploy commits on main
+        run: |
+          git fetch --no-tags origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::$GITHUB_REF_NAME is not on main; refusing to deploy."
+            exit 1
+          fi
+
+      # Dry runs may come from main itself; anything that writes must be a tag.
+      - name: Tag must match package.json version
+        if: inputs.dry_run != true
+        run: |
+          expected="v$(node -p "require('./package.json').version")"
+          if [ "$GITHUB_REF_NAME" != "$expected" ]; then
+            echo "::error::$GITHUB_REF_NAME does not match package.json ($expected)."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run check
+
+      - run: npm run build
+
+      # Refuse to ship a build that came out empty or truncated.
+      - name: Verify build output
+        run: |
+          if [ ! -f dist/index.html ]; then
+            echo "::error::dist/index.html missing - refusing to deploy"
+            exit 1
+          fi
+          count=$(find dist -type f | wc -l)
+          echo "dist contains $count files"
+          if [ "$count" -lt 4 ]; then
+            echo "::error::only $count files in dist - looks truncated, refusing to deploy"
+            exit 1
+          fi
+
+      # Secrets go through env, not ${{ }} interpolation into the shell, so a key
+      # containing shell metacharacters can't be mangled or expanded.
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          install -m 600 /dev/null ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/deploy_key > /dev/null || {
+            echo "::error::SSH_PRIVATE_KEY is not a valid private key"; exit 1; }
+
+      # No --delete: the directory predates this pipeline (it was hand-published)
+      # and may hold files that aren't in dist/, so the main sync only adds and
+      # overwrites. The trailing slash on DEPLOY_PATH keeps rsync inside it.
+      # -t keeps mtimes so unchanged files are skipped; --omit-dir-times because
+      # the deploy user may not own every directory it writes into.
+      - name: Deploy to server
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "::notice::Dry run - no changes will be written"
+            EXTRA=--dry-run
+          else
+            EXTRA=""
+          fi
+          rsync -rltvz --omit-dir-times $EXTRA \
+            --exclude='.DS_Store' \
+            --chmod=D755,F644 \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes" \
+            dist/ "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
+
+      # _astro/ holds content-hashed CSS/JS that would otherwise pile up forever.
+      # --delete is scoped to that one subdirectory. Runs after the main sync so
+      # the new chunks are already in place before the old ones go.
+      - name: Prune stale hashed assets
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ ! -d dist/_astro ]; then
+            echo "No dist/_astro in this build; nothing to prune."
+            exit 0
+          fi
+          if [ "$DRY_RUN" = "true" ]; then
+            EXTRA=--dry-run
+          else
+            EXTRA=""
+          fi
+          rsync -rltvz --omit-dir-times --delete $EXTRA \
+            --chmod=D755,F644 \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes" \
+            dist/_astro/ "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/_astro/"
+
+      - name: Clean up key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

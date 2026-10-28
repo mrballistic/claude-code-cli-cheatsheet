@@ -1,0 +1,38 @@
+---
+/** Hooks: the events people use most, handler types, and two examples. */
+import CommandTable from './CommandTable.astro';
+import FileBlock from './FileBlock.astro';
+import SectionHeading from './SectionHeading.astro';
+import { HOOKS } from '@/lib/constants';
+---
+
+<section class="section reveal">
+  <SectionHeading id="hooks" title={HOOKS.title} lede={HOOKS.description} />
+
+  <div class="grid gap-10 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+    <div class="min-w-0">
+      <h3 class="sub-title mb-4">{HOOKS.eventsTitle}</h3>
+      <CommandTable
+        rows={HOOKS.events.map((e) => ({ term: e.name, description: e.description }))}
+        termHeader={HOOKS.eventHeader}
+        descriptionHeader={HOOKS.whenHeader}
+        caption={HOOKS.eventsTitle}
+      />
+      <p class="mt-4 text-sm text-ink-2">
+        {HOOKS.moreEvents}
+        <a href={HOOKS.moreEventsLink} target="_blank" rel="noopener noreferrer" class="underline">{HOOKS.moreEventsLabel}</a>
+      </p>
+      <p class="mt-2 text-sm text-ink-2">{HOOKS.handlerNote}</p>
+    </div>
+
+    <div class="grid min-w-0 content-start gap-8">
+      {HOOKS.examples.map((ex) => (
+        <div>
+          <h3 class="font-bold">{ex.title}</h3>
+          <p class="mt-1 mb-3 text-sm text-ink-2">{ex.description}</p>
+          <FileBlock filename={ex.filename} code={ex.code} />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

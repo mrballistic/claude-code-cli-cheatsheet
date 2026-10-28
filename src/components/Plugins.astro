@@ -1,0 +1,77 @@
+---
+/** Plugins: what they are, then the two from the talk. */
+import Cmd from './Cmd.astro';
+import CommandTable from './CommandTable.astro';
+import PluginHeader from './PluginHeader.astro';
+import SectionHeading from './SectionHeading.astro';
+import { COMMANDS_COPY, IMPECCABLE, PLUGINS, POWER_COMBO, SUPERPOWERS } from '@/lib/constants';
+---
+
+<section class="section reveal">
+  <SectionHeading id="plugins" title={PLUGINS.title} lede={PLUGINS.description} />
+
+  <article class="plugin">
+    <PluginHeader title={SUPERPOWERS.title} byline={SUPERPOWERS.byline} summary={SUPERPOWERS.summary} url={SUPERPOWERS.url} />
+    {SUPERPOWERS.installCommands.map((c) => <Cmd command={c} prompt="repl" class="mt-5" />)}
+
+    <h4 class="sub-title mt-10 mb-4">{SUPERPOWERS.workflowTitle}</h4>
+    <ol class="workflow">
+      {SUPERPOWERS.workflow.map((step, i) => (
+        <li class="step">
+          <span class="step-num" aria-hidden="true">{String(i + 1)}</span>
+          <span class="step-name">{step.name}</span>
+          <span class="step-desc">{step.description}</span>
+        </li>
+      ))}
+    </ol>
+
+    <h4 class="sub-title mt-10 mb-4">{SUPERPOWERS.keySkillsTitle}</h4>
+    <dl class="grid gap-x-10 gap-y-2 sm:grid-cols-2">
+      {SUPERPOWERS.keySkills.map((s) => (
+        <div class="flex flex-wrap gap-x-3">
+          <dt><code class="cell-code">{s.name}</code></dt>
+          <dd class="text-ink-2">{s.description}</dd>
+        </div>
+      ))}
+    </dl>
+  </article>
+
+  <article class="plugin mt-16">
+    <PluginHeader title={IMPECCABLE.title} byline={IMPECCABLE.byline} summary={IMPECCABLE.summary} url={IMPECCABLE.url} />
+    <div class="mt-5 grid gap-3">
+      {IMPECCABLE.installCommands.map((c) => <Cmd command={c} prompt="repl" />)}
+    </div>
+    <h4 class="sub-title mt-10 mb-4">{IMPECCABLE.commandsTitle}</h4>
+    <CommandTable
+      rows={IMPECCABLE.commands.map((c) => ({ term: c.command, description: c.description }))}
+      termHeader={COMMANDS_COPY.commandHeader}
+      descriptionHeader={COMMANDS_COPY.descriptionHeader}
+      caption={IMPECCABLE.commandsTitle}
+    />
+    <p class="nod mt-6"><span class="text-accent" aria-hidden="true">⏺</span> {IMPECCABLE.nod}</p>
+  </article>
+
+  <aside class="box mt-16">
+    <h3 class="font-bold">{POWER_COMBO.title}</h3>
+    <p class="mt-2 text-ink-2 prose-measure">{POWER_COMBO.description}</p>
+  </aside>
+</section>
+
+<style>
+  .workflow {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+    border-top: 1px solid var(--rule);
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    column-gap: 0.25rem;
+    padding: 0.75rem 1rem 0.75rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .step-num { grid-row: span 2; font-family: var(--font-mono); font-size: 0.875rem; color: var(--ink-3); }
+  .step-name { font-weight: 700; }
+  .step-desc { font-size: 0.875rem; color: var(--ink-2); }
+  .nod { display: flex; gap: 1ch; color: var(--ink-2); max-width: var(--measure); }
+</style>

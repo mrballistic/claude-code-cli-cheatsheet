@@ -1,0 +1,33 @@
+---
+/** Skills: what a SKILL.md looks like, where it lives, and where to find more. */
+import FileBlock from './FileBlock.astro';
+import LinkList from './LinkList.astro';
+import PathList from './PathList.astro';
+import SectionHeading from './SectionHeading.astro';
+import { SKILLS } from '@/lib/constants';
+---
+
+<section class="section reveal">
+  <SectionHeading id="skills" title={SKILLS.title} lede={SKILLS.description} />
+
+  <div class="grid gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+    <div class="min-w-0">
+      <FileBlock filename={SKILLS.formatFilename} code={SKILLS.skillFormat} />
+      <h3 class="sub-title mt-10 mb-4">{SKILLS.locationsTitle}</h3>
+      <PathList items={SKILLS.locations} />
+    </div>
+
+    <div class="min-w-0">
+      <dl class="grid gap-5">
+        {SKILLS.concepts.map((c) => (
+          <div>
+            <dt class="font-bold">{c.title}</dt>
+            <dd class="mt-1 text-ink-2">{c.description}</dd>
+          </div>
+        ))}
+      </dl>
+      <h3 class="sub-title mt-10 mb-4">{SKILLS.resourcesTitle}</h3>
+      <LinkList items={SKILLS.resources} />
+    </div>
+  </div>
+</section>

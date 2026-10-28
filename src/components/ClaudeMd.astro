@@ -1,0 +1,30 @@
+---
+/** CLAUDE.md: where it lives, a template, and what makes one good. */
+import FileBlock from './FileBlock.astro';
+import PathList from './PathList.astro';
+import SectionHeading from './SectionHeading.astro';
+import { CLAUDE_MD } from '@/lib/constants';
+---
+
+<section class="section reveal">
+  <SectionHeading id="claude-md" title={CLAUDE_MD.title} lede={CLAUDE_MD.description} />
+
+  <div class="grid gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+    <div class="min-w-0">
+      <h3 class="sub-title mb-4">{CLAUDE_MD.locationsTitle}</h3>
+      <PathList items={CLAUDE_MD.locations} />
+      <p class="mt-4 text-sm text-ink-2 prose-measure">{CLAUDE_MD.importNote}</p>
+
+      <h3 class="sub-title mt-10 mb-4">{CLAUDE_MD.tipsTitle}</h3>
+      <dl class="grid gap-4">
+        {CLAUDE_MD.tips.map((t) => (
+          <div>
+            <dt class="font-bold">{t.title}</dt>
+            <dd class="mt-0.5 text-ink-2">{t.description}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+    <FileBlock filename={CLAUDE_MD.templateFilename} code={CLAUDE_MD.template} />
+  </div>
+</section>
